@@ -88,7 +88,7 @@ color: #66A968\
 color: #E9C062\
 }\
 .ace-pastel-on-dark .ace_comment {\
-color: #A6C6FF\
+color: #6A9955\
 }\
 .ace-pastel-on-dark .ace_variable {\
 color: #BEBF55\
