@@ -146,6 +146,7 @@ declare module 'ace-builds/src-noconflict/mode-prolog';
 declare module 'ace-builds/src-noconflict/mode-properties';
 declare module 'ace-builds/src-noconflict/mode-protobuf';
 declare module 'ace-builds/src-noconflict/mode-puppet';
+declare module 'ace-builds/src-noconflict/mode-pseudocode';
 declare module 'ace-builds/src-noconflict/mode-python';
 declare module 'ace-builds/src-noconflict/mode-qml';
 declare module 'ace-builds/src-noconflict/mode-r';
