@@ -8,17 +8,16 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
     
         var keywordMapper = this.createKeywordMapper({
             "keyword.control.asp": "If|Then|Else|ElseIf|End|While|For|To|Each|Case|Select|Return"
-                + "|Continue|Do|Until|Loop|Next|With|Exit|Function|Property|Type|Enum|Sub|If|DIV|MOD|XOR|AND|OR|NOT|Endsubroutine|Position|USERINPUT|OUTPUT|input|Endsub|Endfunction"
-                + "|End|Set|Add|Display|Get|integer|string|decimal|real|",
+            + "|Continue|Do|Until|Loop|Next|With|Exit|Function|Type|Sub|Endsubroutine|Endsub|Endfunction|subprogram|subprocedure",
+            "keyword":"End|Set|Add|Display|Get|integer|string|decimal|real|Position|userinput|output|input|write|declare",
             "support.function":
                 "Function|"+
                 "STRING_TO_INT|STRING_TO_REAL|"+
                 "INT_TO_STRING|REAL_TO_STRING|CHAR_TO_CODE|"+
                 "CODE_TO_CHAR|Substring|Subroutine|Len|RANDOM_INT|Sub|Call|openRead|readLine|close|endOfFile|"+
-                "writeLine|openWrite|startOfFile|read|write|open|",
-            "constant.language.boolean": "True|False|",
+                "writeLine|openWrite|startOfFile|read|write|open|procedure",
+            "keyword.operator.asp": "Mod|And|Not|Or|Xor|As|Eqv|Imp|Is|Div",
             "storage.modifier.asp": "Private|Public|Default",
-            "keyword.operator.asp": "Mod|And|Not|Or|Xor|As|Eqv|Imp|Is",
             "constant.language.asp": "Empty|False|Nothing|Null|True"
         }, "identifier", true);
     
@@ -51,7 +50,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                     "variable.parameter.function.asp",
                     "punctuation.definition.parameters.asp"
                 ],
-                regex: "^(\\s*)(Function|Sub|Subroutine|Procedure)(\\s+)([a-zA-Z_]\\w*)(\\s*)(\\()([^)]*)(\\))"
+                regex: "^(\\s*)(Function|Sub|Subroutine|Procedure|Subprogram|subprocedure)(\\s+)([a-zA-Z_]\\w*)(\\s*)(\\()([^)]*)(\\))"
             },
             {
                 token: "punctuation.definition.comment.asp",
@@ -103,7 +102,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                    'storage.type.prototype',
                    'entity.name.function.prototype'
                 ],
-                regex: '\\b(function|procedure|sub|subprocedure)(\\s+)(\\w+)(\\.\\w+)?(?=(?:\\(.*?\\))?;\\s*(?:attribute|forward|external))'
+                regex: '\\b(function|procedure|sub|subprocedure|subprogram)(\\s+)(\\w+)(\\.\\w+)?(?=(?:\\(.*?\\))?;\\s*(?:attribute|forward|external))'
             }
         ],
         "state_3": [
@@ -193,6 +192,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             "subroutine": 1,
             "select": 1,
             "do": 1,
+            "subprocedure": 1,
+            "subprogram": 1,
             "for": 1,
             "while": 1,
             "with": 1,
@@ -210,7 +211,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             "wend": -1
         };
     
-        this.foldingStartMarker = /(?:\s|^)(function|sub|if|select|do|for|while|with|property|else|elseif|)\b/i;
+        this.foldingStartMarker = /(?:\s|^)(function|sub|if|select|do|for|while|with|else|elseif|subprogram|subprocedure)\b/i;
         this.foldingStopMarker = /\b(end|loop|next|wend|endif|close|endsub|endfunction|finish)\b/i;
     
         this.getFoldWidgetRange = function (session, foldStyle, row) {
@@ -237,8 +238,6 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 if (keyword) {
                     var type = session.getTokenAt(row, match.index + 2).type;
                     if (type == "keyword.control.asp" || type == "storage.type.function.asp") {
-                        if (keyword == "if" && !/then\s*('|$)/i.test(line))
-                            return "";
                         return "start";
                     }
                 }
@@ -253,6 +252,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 "function": 1,
                 "sub": 1,
                 "if": 1,
+                "subprocedure": 1,
+                "subprogram": 1,
                 "select": 1,
                 "with": 1,
                 "property": 1,
@@ -278,6 +279,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 case "property":
                 case "sub":
                 case "function":
+                case "subprogram":
+                case "subprocedure":
                 case "if":
                 case "select":
                 case "do":
@@ -290,7 +293,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                     if (singleLineCondition)
                         return;
                     var checkToken = new RegExp("(?:^|\\s)" + val, "i");
-                    var endTest = /^\s*End\s(If|Sub|Select|Function|Class|With|Property)\s*/i.test(line);
+                    var endTest = /^\s*End\s(If|Sub|Select|Function|Class|With|Property|Subprogram|Subprocedure)\s*/i.test(line);
                     if (!checkToken.test(line) && !endTest) {
                         return;
                     }
@@ -347,6 +350,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
     
                 switch (val) {
                     case "property":
+                    case "subprogram":
+                    case "subprocedure":
                     case "sub":
                     case "function":
                     case "if":
@@ -418,6 +423,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                                 case "select":
                                 case "sub":
                                 case "if":
+                                case "subprogram":
+                                case "subprocedure":
                                 case "function":
                                 case "class":
                                 case "with":
@@ -523,6 +530,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                     if (val in indentKeywords) {
                         switch (val) {
                             case "property":
+                            case "subprogram":
+                            case "subprocedure":
                             case "sub":
                             case "function":
                             case "select":
