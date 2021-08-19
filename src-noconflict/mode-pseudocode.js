@@ -7,10 +7,16 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
     var pseudocodeHighlightRules = function() {
     
         var keywordMapper = this.createKeywordMapper({
-            keyword: "If|Then|Else|ElseIf|End|While|For|To|Each|Case|Select|Return"
+            "keyword.control.asp": "If|Then|Else|ElseIf|End|While|For|To|Each|Case|Select|Return"
                 + "|Continue|Do|Until|Loop|Next|With|Exit|Function|Property|Type|Enum|Sub|If|DIV|MOD|XOR|AND|OR|NOT|Endsubroutine|Position|USERINPUT|OUTPUT|input|Endsub|Endfunction"
-                + "|End|Set|Add|Display|Get|integer|string|decimal|real|","support.function":"Function|STRING_TO_INT|STRING_TO_REAL|INT_TO_STRING|REAL_TO_STRING|CHAR_TO_CODE|CODE_TO_CHAR|Substring|Subroutine|Len|RANDOM_INT|Sub|Call|openRead|readLine|close|endOfFile|writeLine|openWrite|startOfFile|read|write|open|include|",
-            "storage.type.asp": "Call|Const|Redim|Set|Let|Get|New|Randomize|Option|Explicit|Preserve|Erase|Execute|ExecuteGlobal",
+                + "|End|Set|Add|Display|Get|integer|string|decimal|real|",
+            "support.function":
+                "Function|"+
+                "STRING_TO_INT|STRING_TO_REAL|"+
+                "INT_TO_STRING|REAL_TO_STRING|CHAR_TO_CODE|"+
+                "CODE_TO_CHAR|Substring|Subroutine|Len|RANDOM_INT|Sub|Call|openRead|readLine|close|endOfFile|"+
+                "writeLine|openWrite|startOfFile|read|write|open|",
+            "constant.language.boolean": "True|False|",
             "storage.modifier.asp": "Private|Public|Default",
             "keyword.operator.asp": "Mod|And|Not|Or|Xor|As|Eqv|Imp|Is",
             "constant.language.asp": "Empty|False|Nothing|Null|True"
@@ -49,7 +55,13 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             },
             {
                 token: "punctuation.definition.comment.asp",
-                regex: "#|REM(?=\\s|$)",
+                regex: "#.*$",
+                next: "comment",
+                caseInsensitive: true
+            },
+            {
+                token: "punctuation.definition.comment.asp",
+                regex: "//.*$",
                 next: "comment",
                 caseInsensitive: true
             },
@@ -84,6 +96,14 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             {
                 token: ["keyword.operator.asp"],
                 regex: "\\-|\\+|\\*|\\/|\\>|\\<|\\=|\\&|\\\\|\\^"
+            },
+            {
+                caseInsensitive: true,
+                token: ['variable', "text",
+                   'storage.type.prototype',
+                   'entity.name.function.prototype'
+                ],
+                regex: '\\b(function|procedure|sub|subprocedure)(\\s+)(\\w+)(\\.\\w+)?(?=(?:\\(.*?\\))?;\\s*(?:attribute|forward|external))'
             }
         ],
         "state_3": [
@@ -190,8 +210,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             "wend": -1
         };
     
-        this.foldingStartMarker = /(?:\s|^)(class|function|sub|if|select|do|for|while|with|property|else|elseif)\b/i;
-        this.foldingStopMarker = /\b(end|loop|next|wend)\b/i;
+        this.foldingStartMarker = /(?:\s|^)(function|sub|if|select|do|for|while|with|property|else|elseif|)\b/i;
+        this.foldingStopMarker = /\b(end|loop|next|wend|endif|close|endsub|endfunction|finish)\b/i;
     
         this.getFoldWidgetRange = function (session, foldStyle, row) {
             var line = session.getLine(row);
@@ -230,7 +250,6 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             var stream = new TokenIterator(session, row, column);
     
             var endOpenings = {
-                "class": 1,
                 "function": 1,
                 "sub": 1,
                 "if": 1,
@@ -491,7 +510,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             "end",
             "loop",
             "next",
-            "wend"
+            "wend",
+            "endif"
         ];
     
         function getNetIndentLevel(tokens, line, indentKeywords) {
