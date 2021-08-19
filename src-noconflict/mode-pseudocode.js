@@ -9,7 +9,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
         var keywordMapper = this.createKeywordMapper({
             "keyword.control.asp": "If|Then|Else|ElseIf|End|While|For|To|Each|Case|Select|Return"
             + "|Continue|Do|Until|Loop|Next|With|Exit|Function|Type|Sub|Endsubroutine|Endsub|Endfunction|subprogram|subprocedure",
-            "keyword":"End|Set|Add|Display|Get|integer|string|decimal|real|Position|userinput|output|input|write|declare",
+            keyword:"End|Set|Add|Display|Get|integer|string|decimal|real|Position|userinput|output|input|write|declare|in|to",
             "support.function":
                 "Function|"+
                 "STRING_TO_INT|STRING_TO_REAL|"+
