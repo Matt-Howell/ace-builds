@@ -145,6 +145,7 @@ ace.config.setModuleUrl('ace/mode/prolog', require('file-loader?esModule=false!.
 ace.config.setModuleUrl('ace/mode/properties', require('file-loader?esModule=false!./src-noconflict/mode-properties.js'))
 ace.config.setModuleUrl('ace/mode/protobuf', require('file-loader?esModule=false!./src-noconflict/mode-protobuf.js'))
 ace.config.setModuleUrl('ace/mode/puppet', require('file-loader?esModule=false!./src-noconflict/mode-puppet.js'))
+ace.config.setModuleUrl('ace/mode/pseudocode', require('file-loader?esModule=false!./src-noconflict/mode-pseudocode.js'))
 ace.config.setModuleUrl('ace/mode/python', require('file-loader?esModule=false!./src-noconflict/mode-python.js'))
 ace.config.setModuleUrl('ace/mode/qml', require('file-loader?esModule=false!./src-noconflict/mode-qml.js'))
 ace.config.setModuleUrl('ace/mode/r', require('file-loader?esModule=false!./src-noconflict/mode-r.js'))
