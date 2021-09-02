@@ -17,7 +17,6 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 "CODE_TO_CHAR|Substring|Subroutine|Len|RANDOM_INT|Sub|Call|openRead|readLine|close|endOfFile|"+
                 "writeLine|openWrite|startOfFile|read|write|open|procedure",
             "keyword.operator.asp": "Mod|And|Not|Or|Xor|As|Eqv|Imp|Is|Div",
-            "storage.modifier.asp": "Private|Public|Default",
             "constant.language.asp": "Empty|False|Nothing|Null|True"
         }, "identifier", true);
     
