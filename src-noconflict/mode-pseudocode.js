@@ -16,8 +16,9 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 "CODE_TO_CHAR|Substring|Subroutine|Len|RANDOM_INT|Sub|Call|openRead|readLine|close|endOfFile|"+
                 "writeLine|openWrite|startOfFile|read|write|open|procedure",
             "keyword.operator.asp": "Mod|And|Not|Or|Xor|As|Eqv|Imp|Is|Div",
-            "variable.language":"Endif|Case|Do|Loop|When|Select|While|For|Endfor|If|Then|Else|ElseIf|While|For|To|Each|Case|Select|Return||Continue|Do|Until|Loop|Next|With|Exit"+
-            "Repeat|Until|Repeat|Next|Endwhile|Then|To|",
+            "iterator.language":"Endif|Case|Do|Loop|When|Select|While|For|Endfor|If|Then|Else|ElseIf|While|Each|Select|Case|Return|Continue|Do|Loop|Next|"+
+            "Repeat|Until|Endwhile|Endif|Then|",
+            "variable.language":"To|With|Exit|i|j|until",
             "constant.language.asp": "Empty|False|Nothing|Null|True"
         }, "identifier", true);
     
@@ -223,7 +224,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 var keyword = match && match[1].toLowerCase();
                 if (keyword) {
                     var type = session.getTokenAt(row, match.index + 2).type;
-                    if (type === "keyword.control.asp" || type === "storage.type.function.asp")
+                    if (type === "keyword.control.asp" || type === "storage.type.function.asp" || type === "iterator.language")
                         return this.vbsBlock(session, row, match.index + 2);
                 }
             }
@@ -237,7 +238,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 var keyword = match && match[1].toLowerCase();
                 if (keyword) {
                     var type = session.getTokenAt(row, match.index + 2).type;
-                    if (type == "keyword.control.asp" || type == "storage.type.function.asp") {
+                    if (type == "keyword.control.asp" || type == "storage.type.function.asp" || type === "iterator.language") {
                         return "start";
                     }
                 }
@@ -252,6 +253,12 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 "function": 1,
                 "sub": 1,
                 "if": 1,
+                "while": 1,
+                "for": 1,
+                "loop": 1,
+                "repeat": 1,
+                "for": 1,
+                "do": 1,
                 "subprocedure": 1,
                 "subprogram": 1,
                 "select": 1,
@@ -262,7 +269,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             };
     
             var token = stream.getCurrentToken();
-            if (!token || (token.type != "keyword.control.asp" && token.type != "storage.type.function.asp"))
+            if (!token || (token.type != "keyword.control.asp" && token.type != "storage.type.function.asp" || token.type != "iterator.language"))
                 return;
     
             var startTokenValue = token.value.toLowerCase();
@@ -285,6 +292,9 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 case "select":
                 case "do":
                 case "for":
+                case "repeat":
+                case "case":
+                case "loop":
                 case "class":
                 case "while":
                 case "with":
@@ -343,21 +353,24 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             while(token = stream.step()) {
                 var outputRange = null;
                 var ignore = false;
-                if (token.type != "keyword.control.asp" && token.type != "storage.type.function.asp")
+                if (token.type != "keyword.control.asp" && token.type != "storage.type.function.asp" && token.type != "iterator.language")
                     continue;
                 val = token.value.toLowerCase();
                 var level = dir * this.indentKeywords[val];
     
                 switch (val) {
                     case "property":
-                    case "subprogram":
-                    case "subprocedure":
                     case "sub":
                     case "function":
+                    case "subprogram":
+                    case "subprocedure":
                     case "if":
                     case "select":
                     case "do":
                     case "for":
+                    case "repeat":
+                    case "case":
+                    case "loop":
                     case "class":
                     case "while":
                     case "with":
@@ -420,15 +433,17 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                                     token = stream.getCurrentToken();
                                     val = token.value.toLowerCase();
                                     break;
-                                case "select":
-                                case "sub":
-                                case "if":
-                                case "subprogram":
-                                case "subprocedure":
-                                case "function":
-                                case "class":
-                                case "with":
-                                case "property":
+                            case "property":
+                            case "sub":
+                            case "function":
+                            case "subprogram":
+                            case "subprocedure":
+                            case "if":
+                            case "select":
+                            case "repeat":
+                            case "case":
+                            case "class":
+                            case "with":
                                     if (val != startTokenValue)
                                         ranges.shift();
                                     break;
@@ -441,7 +456,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                                         ranges.shift();
                                     break;
                                 case "for":
-                                    if (startTokenValue != "next")
+                                    if (startTokenValue != "next" || startTokenValue != "end")
                                         ranges.shift();
                                     break;
                                 case "next":
@@ -449,10 +464,10 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                                         ranges.shift();
                                     break;
                                 case "while":
-                                    if (startTokenValue != "wend")
+                                    if (startTokenValue != "end" || startTokenValue != "endwhile")
                                         ranges.shift();
                                     break;
-                                case "wend":
+                                case "end":
                                     if (startTokenValue != "while")
                                         ranges.shift();
                                     break;
@@ -517,7 +532,12 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             "end",
             "loop",
             "next",
-            "wend",
+            "end",
+            "endwhile",
+            "endfor",
+            "endloop",
+            "close",
+            "finish",
             "endif"
         ];
     
@@ -525,22 +545,25 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             var level = 0;
             for (var i = 0; i < tokens.length; i++) {
                 var token = tokens[i];
-                if (token.type == "keyword.control.asp" || token.type == "storage.type.function.asp") {
+                if (token.type == "keyword.control.asp" || token.type == "storage.type.function.asp" || token.type == "iterator.language") {
                     var val = token.value.toLowerCase();
                     if (val in indentKeywords) {
                         switch (val) {
                             case "property":
-                            case "subprogram":
-                            case "subprocedure":
                             case "sub":
                             case "function":
+                            case "subprogram":
+                            case "subprocedure":
+                            case "if":
                             case "select":
                             case "do":
                             case "for":
+                            case "repeat":
+                            case "case":
+                            case "loop":
                             case "class":
                             case "while":
                             case "with":
-                            case "if":
                                 var checkToken = new RegExp("^\\s* end\\s+" + val, "i");
                                 var singleLineCondition = /^\s*If\s+.*\s+Then(?!')\s+(?!')\S/i.test(line);
                                 if (!singleLineCondition && !checkToken.test(line))
@@ -591,7 +614,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             if (!tokens || !tokens.length)
                 return false;
             var val = tokens[0].value.toLowerCase();
-            return ((tokens[0].type == "keyword.control.asp" || tokens[0].type == "storage.type.function.asp") && outdentKeywords.indexOf(val) != -1);
+            return ((tokens[0].type == "keyword.control.asp" || tokens[0].type == "storage.type.function.asp"  || tokens[0].type == "iterator.language") && outdentKeywords.indexOf(val) != -1);
         };
     
         this.getMatching = function(session, row, column, tokenRange) {
