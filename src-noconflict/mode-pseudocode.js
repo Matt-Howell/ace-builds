@@ -7,8 +7,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
     var pseudocodeHighlightRules = function() {
     
         var keywordMapper = this.createKeywordMapper({
-            "keyword.control.asp": "If|Then|Else|ElseIf|End|While|For|To|Each|Case|Select|Return"
-            + "|Continue|Do|Until|Loop|Next|With|Exit|Function|Type|Sub|Endsubroutine|Endsub|Endfunction|subprogram|subprocedure",
+            "keyword.control.asp":"type|Endsubroutine|endsub|endfunction|subprogram|subprocedure|set|int|str|end",
             keyword:"End|Set|Add|Display|Get|integer|string|decimal|real|Position|userinput|output|input|write|declare|in|to",
             "support.function":
                 "Function|"+
@@ -17,6 +16,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 "CODE_TO_CHAR|Substring|Subroutine|Len|RANDOM_INT|Sub|Call|openRead|readLine|close|endOfFile|"+
                 "writeLine|openWrite|startOfFile|read|write|open|procedure",
             "keyword.operator.asp": "Mod|And|Not|Or|Xor|As|Eqv|Imp|Is|Div",
+            "variable.language":"Endif|Case|Do|Loop|When|Select|While|For|Endfor|If|Then|Else|ElseIf|While|For|To|Each|Case|Select|Return||Continue|Do|Until|Loop|Next|With|Exit"+
+            "Repeat|Until|Repeat|Next|Endwhile|Then|To|",
             "constant.language.asp": "Empty|False|Nothing|Null|True"
         }, "identifier", true);
     
@@ -49,7 +50,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                     "variable.parameter.function.asp",
                     "punctuation.definition.parameters.asp"
                 ],
-                regex: "^(\\s*)(Function|Sub|Subroutine|Procedure|Subprogram|subprocedure)(\\s+)([a-zA-Z_]\\w*)(\\s*)(\\()([^)]*)(\\))"
+                regex: "^(\\s*)(function|sub|subroutine|procedure|subprogram|subprocedure)(\\s+)([a-zA-Z_]\\w*)(\\s*)(\\()([^)]*)(\\))"
             },
             {
                 token: "punctuation.definition.comment.asp",
@@ -94,14 +95,10 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             {
                 token: ["keyword.operator.asp"],
                 regex: "\\-|\\+|\\*|\\/|\\>|\\<|\\=|\\&|\\\\|\\^"
-            },
-            {
-                caseInsensitive: true,
-                token: ['variable', "text",
-                   'storage.type.prototype',
-                   'entity.name.function.prototype'
-                ],
-                regex: '\\b(function|procedure|sub|subprocedure|subprogram)(\\s+)(\\w+)(\\.\\w+)?(?=(?:\\(.*?\\))?;\\s*(?:attribute|forward|external))'
+            }, {
+                 caseInsensitive: true,
+                 token: ['variable', "text", 'storage.type.function', 'entity.name.function'],
+                 regex: '\\b(function|procedure|sub|subroutine)(\\s+)(\\w+)(\\.\\w+)?'
             }
         ],
         "state_3": [
@@ -158,6 +155,11 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 next: "start"
             },
             {
+                token: "string.quoted.double.asp",
+                regex: "'",
+                next: "start"
+            },
+            {
                 defaultToken: "string.quoted.double.asp"
             }
         ]
@@ -206,8 +208,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             "endsub": -1,
             "endsubroutine": -1,
             "close": -1,
-            "endfunction": -1,
-            "wend": -1
+            "endfunction": -1
         };
     
         this.foldingStartMarker = /(?:\s|^)(function|sub|if|select|do|for|while|with|else|elseif|subprogram|subprocedure)\b/i;
