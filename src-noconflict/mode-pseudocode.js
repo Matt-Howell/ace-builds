@@ -70,7 +70,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                     "punctuation.definition.variable.asp"
                 ],
                 regex: "(\\$)[a-zA-Z_x7f-xff][a-zA-Z0-9_x7f-xff]*?\\b\\s*"
-            }
+            },
             {
                 token: "constant.numeric.asp",
                 regex: "-?\\b(?:(?:0(?:x|X)[0-9a-fA-F]*)|(?:(?:[0-9]+\\.?[0-9]*)|(?:\\.[0-9]+))(?:(?:e|E)(?:\\+|-)?[0-9]+)?)(?:L|l|UL|ul|u|U|F|f)?\\b"
