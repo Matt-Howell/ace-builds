@@ -8,13 +8,13 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
     
         var keywordMapper = this.createKeywordMapper({
             "keyword.control.asp":"type|Endsubroutine|endsub|endfunction|subprogram|subprocedure|set|int|str|end",
-            keyword:"End|Set|Add|Display|Get|integer|string|decimal|real|Position|userinput|output|input|write|declare|in|to",
+            keyword:"End|Set|Add|Display|Get|integer|string|decimal|real|Position|userinput|write|declare|in|to",
             "support.function":
                 "Function|"+
                 "STRING_TO_INT|STRING_TO_REAL|"+
                 "INT_TO_STRING|REAL_TO_STRING|CHAR_TO_CODE|"+
                 "CODE_TO_CHAR|Substring|Subroutine|Len|RANDOM_INT|Sub|Call|openRead|readLine|close|endOfFile|"+
-                "writeLine|openWrite|startOfFile|read|write|open|procedure",
+                "writeLine|openWrite|startOfFile|read|write|open|procedure|print|output|display|input|",
             "keyword.operator.asp": "Mod|And|Not|Or|Xor|As|Eqv|Imp|Is|Div",
             "iterator.language":"Endif|Case|Do|Loop|When|Select|While|For|Endfor|If|Then|Else|ElseIf|While|Each|Select|Case|Return|Continue|Do|Loop|Next|"+
             "Repeat|Until|Endwhile|Endif|Then|",
@@ -52,23 +52,13 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                     "punctuation.definition.parameters.asp"
                 ],
                 regex: "^(\\s*)(function|sub|subroutine|procedure|subprogram|subprocedure)(\\s+)([a-zA-Z_]\\w*)(\\s*)(\\()([^)]*)(\\))"
-            },
+            }, 
             {
-                token: "punctuation.definition.comment.asp",
-                regex: "#.*$",
-                next: "comment",
-                caseInsensitive: true
-            },
-            {
-                token: "punctuation.definition.comment.asp",
-                regex: "//.*$",
-                next: "comment",
-                caseInsensitive: true
-            },
-            {
-                token: "storage.type.asp",
-                regex: "On\\s+Error\\s+(?:Resume\\s+Next|GoTo)\\b",
-                caseInsensitive: true
+                token: 'punctuation.definition.comment',
+                regex: '//.*$'
+            }, {
+                token: 'punctuation.definition.comment',
+                regex: '#.*$'
             },
             {
                 token: "punctuation.definition.string.begin.asp",
@@ -80,7 +70,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                     "punctuation.definition.variable.asp"
                 ],
                 regex: "(\\$)[a-zA-Z_x7f-xff][a-zA-Z0-9_x7f-xff]*?\\b\\s*"
-            },
+            }
             {
                 token: "constant.numeric.asp",
                 regex: "-?\\b(?:(?:0(?:x|X)[0-9a-fA-F]*)|(?:(?:[0-9]+\\.?[0-9]*)|(?:\\.[0-9]+))(?:(?:e|E)(?:\\+|-)?[0-9]+)?)(?:L|l|UL|ul|u|U|F|f)?\\b"
@@ -145,24 +135,32 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 defaultToken: "comment.line.apostrophe.asp"
             }
         ],
-        "string": [
-            {
-                token: "constant.character.escape.apostrophe.asp",
-                regex: '""'
-            },
-            {
-                token: "string.quoted.double.asp",
+        "string": [{
+                token: 'punctuation.definition.string.begin',
                 regex: '"',
-                next: "start"
+                push: [{ token: 'constant.character.escape', regex: '\\\\.' },
+                    {
+                        token: 'punctuation.definition.string.end',
+                        regex: '"',
+                        next: 'pop'
+                     },
+                     { defaultToken: 'string.quoted.double' }
+                 ]
+                }, {
+                 token: 'punctuation.definition.string.begin',
+                 regex: '\'',
+                 push: [{
+                         token: 'constant.character.escape.apostrophe',
+                         regex: '\'\''
+                     },
+                     {
+                         token: 'punctuation.definition.string.end',
+                         regex: '\'',
+                         next: 'pop'
+                     },
+                     { defaultToken: 'string.quoted.single' }
+                 ]
             },
-            {
-                token: "string.quoted.double.asp",
-                regex: "'",
-                next: "start"
-            },
-            {
-                defaultToken: "string.quoted.double.asp"
-            }
         ]
     };
     
