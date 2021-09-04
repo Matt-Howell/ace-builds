@@ -136,32 +136,20 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             }
         ],
         "string": [{
-                token: 'punctuation.definition.string.begin',
-                regex: '"',
-                push: [{ token: 'constant.character.escape', regex: '\\\\.' },
-                    {
-                        token: 'punctuation.definition.string.end',
-                        regex: '"',
-                        next: 'pop'
-                     },
-                     { defaultToken: 'string.quoted.double' }
-                 ]
-                }, {
-                 token: 'punctuation.definition.string.begin',
+                 token: "constant.character.escape.apostrophe.asp",
+                 regex: '""'
+             },
+             {
+                 token: "string.quoted.double.asp",
+                 regex: '"',
+                 next: "start"
+             },
+             {
+                 token: "string.quoted.single.asp",
                  regex: '\'',
-                 push: [{
-                         token: 'constant.character.escape.apostrophe',
-                         regex: '\'\''
-                     },
-                     {
-                         token: 'punctuation.definition.string.end',
-                         regex: '\'',
-                         next: 'pop'
-                     },
-                     { defaultToken: 'string.quoted.single' }
-                 ]
-            },
-        ]
+                 next: "start"
+             }
+         ]
     };
     
     };
