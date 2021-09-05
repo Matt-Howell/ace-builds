@@ -69,6 +69,16 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 regex: "-?\\b(?:(?:0(?:x|X)[0-9a-fA-F]*)|(?:(?:[0-9]+\\.?[0-9]*)|(?:\\.[0-9]+))(?:(?:e|E)(?:\\+|-)?[0-9]+)?)(?:L|l|UL|ul|u|U|F|f)?\\b"
             },
             {
+                token: "punctuation.definition.string.begin.asp",
+                regex: '"',
+                next: "string"
+            },
+            {
+                token: "punctuation.definition.string.begin.asp",
+                regex: '\'',
+                next: "string"
+            },
+            {
                 regex: "\\w+",
                 token: keywordMapper
             },
@@ -118,28 +128,27 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 defaultToken: "meta.leading-space"
             }
         ], 
-        "qqstring" : [{
-                token : "string",
-                regex : "\\\\$",
-                consumeLineEnd  : true
-            }, {
-                token : "string",
-                regex : '"|$',
-                next  : "no_regex"
-            }, {
-                defaultToken: "string"
-            }
-        ],
-        "qstring" : [{
-                token : "string",
-                regex : "\\\\$",
-                consumeLineEnd  : true
-            }, {
-                token : "string",
-                regex : "'|$",
-                next  : "no_regex"
-            }, {
-                defaultToken: "string"
+        "string": [
+            {
+                token: "constant.character.escape.apostrophe.asp",
+                regex: '""'
+            },
+            {
+                token: "constant.character.escape.apostrophe.asp",
+                regex: '\'\''
+            },
+            {
+                token: "string.quoted.single.asp",
+                regex: '\'',
+                next: "start"
+            },
+            {
+                token: "string.quoted.double.asp",
+                regex: '"',
+                next: "start"
+            },
+            {
+                defaultToken: "string.quoted.double.asp"
             }
         ]
     };
