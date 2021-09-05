@@ -144,7 +144,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                  },
                  { defaultToken: 'string.quoted.single' }
                 ]
-             }
+             },
+             { defaultToken: 'string.quoted.double' }
         ]
     };
     
