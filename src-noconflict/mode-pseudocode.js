@@ -64,8 +64,32 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                     "punctuation.definition.variable.asp"
                 ],
                 regex: "(\\$)[a-zA-Z_x7f-xff][a-zA-Z0-9_x7f-xff]*?\\b\\s*"
-            },
+            }, {
+                token: 'punctuation.definition.string.begin',
+                regex: '"',
+                push: [{ token: 'constant.character.escape', regex: '\\\\.' },
+                    {
+                        token: 'punctuation.definition.string.end',
+                        regex: '"',
+                        next: 'pop'
+                    },
+                    { defaultToken: 'string.quoted.double' }
+                ]}, 
             {
+                 token: 'punctuation.definition.string.begin',
+                 regex: '\'',
+                 push: [{
+                        token: 'constant.character.escape.apostrophe',
+                        regex: '\'\''
+                    },
+                    {
+                        token: 'punctuation.definition.string.end',
+                        regex: '\'',
+                        next: 'pop'
+                    },
+                    { defaultToken: 'string.quoted.single' }
+                ]
+            },{
                 token: "constant.numeric.asp",
                 regex: "-?\\b(?:(?:0(?:x|X)[0-9a-fA-F]*)|(?:(?:[0-9]+\\.?[0-9]*)|(?:\\.[0-9]+))(?:(?:e|E)(?:\\+|-)?[0-9]+)?)(?:L|l|UL|ul|u|U|F|f)?\\b"
             },
@@ -118,34 +142,6 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             {
                 defaultToken: "meta.leading-space"
             }
-        ],
-        "string": [{
-            token: 'punctuation.definition.string.begin',
-            regex: '"',
-            push: [{ token: 'constant.character.escape', regex: '\\\\.' },
-                {
-                    token: 'punctuation.definition.string.end',
-                    regex: '"',
-                    next: 'pop'
-                },
-                { defaultToken: 'string.quoted.double' }
-            ]
-            }, {
-                token: 'punctuation.definition.string.begin',
-                regex: '\'',
-                push: [{
-                    token: 'constant.character.escape.apostrophe',
-                    regex: '\'\''
-                 },
-                 {
-                    token: 'punctuation.definition.string.end',
-                    regex: '\'',
-                    next: 'pop'
-                 },
-                 { defaultToken: 'string.quoted.single' }
-                ]
-             },
-             { defaultToken: 'string.quoted.double' }
         ]
     };
     
