@@ -118,11 +118,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 defaultToken: "meta.leading-space"
             }
         ], 
-        "qqstring" : [
-            {
-                token : "constant.language.escape",
-                regex : escapedRe
-            }, {
+        "qqstring" : [{
                 token : "string",
                 regex : "\\\\$",
                 consumeLineEnd  : true
@@ -134,11 +130,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 defaultToken: "string"
             }
         ],
-        "qstring" : [
-            {
-                token : "constant.language.escape",
-                regex : escapedRe
-            }, {
+        "qstring" : [{
                 token : "string",
                 regex : "\\\\$",
                 consumeLineEnd  : true
