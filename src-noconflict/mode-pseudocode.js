@@ -65,31 +65,6 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 ],
                 regex: "(\\$)[a-zA-Z_x7f-xff][a-zA-Z0-9_x7f-xff]*?\\b\\s*"
             }, {
-                token: 'punctuation.definition.string.begin',
-                regex: '"',
-                push: [{ token: 'constant.character.escape', regex: '\\\\.' },
-                    {
-                        token: 'punctuation.definition.string.end',
-                        regex: '"',
-                        next: 'pop'
-                    },
-                    { defaultToken: 'string.quoted.double' }
-                ]}, 
-            {
-                 token: 'punctuation.definition.string.begin',
-                 regex: '\'',
-                 push: [{
-                        token: 'constant.character.escape.apostrophe',
-                        regex: '\'\''
-                    },
-                    {
-                        token: 'punctuation.definition.string.end',
-                        regex: '\'',
-                        next: 'pop'
-                    },
-                    { defaultToken: 'string.quoted.single' }
-                ]
-            },{
                 token: "constant.numeric.asp",
                 regex: "-?\\b(?:(?:0(?:x|X)[0-9a-fA-F]*)|(?:(?:[0-9]+\\.?[0-9]*)|(?:\\.[0-9]+))(?:(?:e|E)(?:\\+|-)?[0-9]+)?)(?:L|l|UL|ul|u|U|F|f)?\\b"
             },
@@ -141,6 +116,38 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             },
             {
                 defaultToken: "meta.leading-space"
+            }
+        ], 
+        "qqstring" : [
+            {
+                token : "constant.language.escape",
+                regex : escapedRe
+            }, {
+                token : "string",
+                regex : "\\\\$",
+                consumeLineEnd  : true
+            }, {
+                token : "string",
+                regex : '"|$',
+                next  : "no_regex"
+            }, {
+                defaultToken: "string"
+            }
+        ],
+        "qstring" : [
+            {
+                token : "constant.language.escape",
+                regex : escapedRe
+            }, {
+                token : "string",
+                regex : "\\\\$",
+                consumeLineEnd  : true
+            }, {
+                token : "string",
+                regex : "'|$",
+                next  : "no_regex"
+            }, {
+                defaultToken: "string"
             }
         ]
     };
