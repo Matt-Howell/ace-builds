@@ -7,8 +7,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
     var pseudocodeHighlightRules = function() {
     
         var keywordMapper = this.createKeywordMapper({
-            "keyword.control.asp":"type|Endsubroutine|endsub|endfunction|subprogram|subprocedure|set|int|str|end",
-            keyword:"End|Set|Add|Display|Get|integer|string|decimal|real|Position|userinput|write|declare|in|to",
+            "keyword.control.asp":"type|subprogram|subprocedure|set|int|str",
+            keyword:"Set|Add|Display|Get|integer|string|decimal|real|Position|userinput|write|declare|in|to",
             "support.function":
                 "Function|"+
                 "STRING_TO_INT|STRING_TO_REAL|"+
@@ -19,6 +19,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             "iterator.language":"Endif|Case|Do|Loop|When|Select|While|For|Endfor|If|Then|Else|ElseIf|While|Each|Select|Case|Return|Continue|Do|Loop|Next|"+
             "Repeat|Until|Endwhile|Endif|Then|",
             "variable.language":"To|With|Exit|i|j|until",
+            "endings.language":"End subroutine|end sub|end function|end"
             "constant.language.asp": "Empty|False|Nothing|Null|True"
         }, "identifier", true);
     
