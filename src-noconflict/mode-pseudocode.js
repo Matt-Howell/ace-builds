@@ -19,7 +19,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             "iterator.language":"Endif|Case|Do|Loop|When|Select|While|For|Endfor|If|Then|Else|ElseIf|While|Each|Select|Case|Return|Continue|Do|Loop|Next|"+
             "Repeat|Until|Endwhile|Endif|Then|",
             "variable.language":"To|With|Exit|i|j|until",
-            "endings.language":"End subroutine|end sub|end function|end"
+            "endings.language":"End subroutine|end sub|end function|end",
             "constant.language.asp": "Empty|False|Nothing|Null|True"
         }, "identifier", true);
     
