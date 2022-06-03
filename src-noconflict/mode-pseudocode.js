@@ -14,12 +14,12 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 "STRING_TO_INT|STRING_TO_REAL|"+
                 "INT_TO_STRING|REAL_TO_STRING|CHAR_TO_CODE|"+
                 "CODE_TO_CHAR|Substring|Subroutine|Len|RANDOM_INT|Sub|Call|openRead|readLine|close|endOfFile|"+
-                "writeLine|openWrite|startOfFile|read|write|open|procedure|print|output|display|input|record|endrecord|",
+                "writeLine|openWrite|startOfFile|read|write|open|procedure|print|output|display|input|record|endrecord|position|",
             "keyword.operator.asp": "Mod|And|Not|Or|Xor|As|Eqv|Imp|Is|Div",
             "iterator.language":"Endif|Case|Do|Loop|When|Select|While|For|Endfor|If|Then|Else|ElseIf|While|Each|Select|Case|Return|Continue|Do|Loop|Next|"+
-            "Repeat|Until|Endwhile|Endif|Then|",
+            "Repeat|Until|Endwhile|Endif|Then|Record|Endrecord",
             "variable.language":"To|With|Exit|i|j|until",
-            "endings.language":"EndSubroutine|endsub|endfunction|end",
+            "endings.language":"endSubroutine|endsub|endfunction|end",
             "constant.language.asp": "Empty|False|Nothing|Null|True"
         }, "identifier", true);
     
@@ -174,6 +174,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
     
     oop.inherits(FoldMode, BaseFoldMode);
     
+    oop.inherits(FoldMode, BaseFoldMode);
+    
     (function() {
         this.indentKeywords = {
             "function": 1,
@@ -182,6 +184,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             "subroutine": 1,
             "select": 1,
             "do": 1,
+            "record": 1,
             "subprocedure": 1,
             "subprogram": 1,
             "for": 1,
@@ -197,11 +200,12 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
             "endsub": -1,
             "endsubroutine": -1,
             "close": -1,
-            "endfunction": -1
+            "endfunction": -1,
+            "endrecord": -1
         };
     
-        this.foldingStartMarker = /(?:\s|^)(function|sub|if|select|do|for|while|with|else|elseif|subprogram|subprocedure)\b/i;
-        this.foldingStopMarker = /\b(end|loop|next|wend|endif|close|endsub|endfunction|finish)\b/i;
+        this.foldingStartMarker = /(?:\s|^)(function|sub|if|select|do|for|while|with|else|elseif|subprogram|subprocedure|subroutine|record)\b/i;
+        this.foldingStopMarker = /\b(end|loop|next|wend|endif|close|endsub|endfunction|finish|endsubroutine|endrecord|endwhile)\b/i;
     
         this.getFoldWidgetRange = function (session, foldStyle, row) {
             var line = session.getLine(row);
@@ -249,6 +253,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 "do": 1,
                 "subprocedure": 1,
                 "subprogram": 1,
+                "subroutine": 1,
+                "record": 1,
                 "select": 1,
                 "with": 1,
                 "property": 1,
@@ -275,6 +281,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 case "sub":
                 case "function":
                 case "subprogram":
+                case "subroutine":
+                case "record":
                 case "subprocedure":
                 case "if":
                 case "select":
@@ -287,11 +295,11 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 case "while":
                 case "with":
                     var line = session.getLine(row);
-                    var singleLineCondition = /^\s*If\s+.*\s+Then(?!')\s+(?!')\S/i.test(line);
+                    var singleLineCondition = /^\s*If\s+.*\s+(?!')\s+(?!')\S/i.test(line);
                     if (singleLineCondition)
                         return;
                     var checkToken = new RegExp("(?:^|\\s)" + val, "i");
-                    var endTest = /^\s*End\s(If|Sub|Select|Function|Class|With|Property|Subprogram|Subprocedure)\s*/i.test(line);
+                    var endTest = /^\s*End(If|Sub|Select|Function|Class|With|Property|Subprogram|Subprocedure|Subroutine|Record)\s*/i.test(line);
                     if (!checkToken.test(line) && !endTest) {
                         return;
                     }
@@ -350,6 +358,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                     case "property":
                     case "sub":
                     case "function":
+                    case "subroutine":
+                    case "record":
                     case "subprogram":
                     case "subprocedure":
                     case "if":
@@ -363,7 +373,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                     case "while":
                     case "with":
                         var line = session.getLine(stream.getCurrentTokenRow());
-                        var singleLineCondition = /^\s*If\s+.*\s+Then(?!')\s+(?!')\S/i.test(line);
+                        var singleLineCondition = /^\s*If\s+.*\s(?!')\s+(?!')\S/i.test(line);
                         if (singleLineCondition) {
                             level = 0;
                             ignore = true;
@@ -381,6 +391,26 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                             ignore = true;
                         }
                         break;
+                    case "endfunction" || "endsubroutine" || "end" || "endrecord" || "endwhile" || "endfor" || "next":
+                        var tokenPos = stream.getCurrentTokenPosition();
+                        firstRange = stream.getCurrentTokenRange();
+                        stream.step = stream.stepForward;
+                        stream.step();
+                        stream.step();
+                        token = stream.getCurrentToken();
+                        if (token) {
+                            val = token.value.toLowerCase();
+                            if (val in endOpenings) {
+                                startTokenValue = val;
+                                var nextTokenPos = stream.getCurrentTokenPosition();
+                                var endColumn = nextTokenPos.column + val.length;
+                                firstRange = new Range(tokenPos.row, tokenPos.column, nextTokenPos.row, endColumn);
+                            }
+                        }
+                        stream.step = stream.stepBackward;
+                        stream.step();
+                        stream.step();
+                        break;
                 }
     
                 if (level > 0) {
@@ -389,7 +419,7 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                     stack.shift();
                     if (!stack.length) {
                             switch (val) {
-                                case "end":
+                                case "endif":
                                     var tokenPos = stream.getCurrentTokenPosition();
                                     outputRange = stream.getCurrentTokenRange();
                                     stream.step();
@@ -427,6 +457,8 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                             case "subprogram":
                             case "subprocedure":
                             case "if":
+                            case "subroutine":
+                            case "record":
                             case "select":
                             case "repeat":
                             case "case":
@@ -444,11 +476,19 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                                         ranges.shift();
                                     break;
                                 case "for":
-                                    if (startTokenValue != "next" || startTokenValue != "end")
+                                    if (startTokenValue != "next" || startTokenValue != "end" || startTokenValue != "endfor")
                                         ranges.shift();
                                     break;
                                 case "next":
                                     if (startTokenValue != "for")
+                                        ranges.shift();
+                                    break;
+                                case "function":
+                                    if (startTokenValue != "endfunction")
+                                        ranges.shift();
+                                    break;
+                                case "subroutine":
+                                    if (startTokenValue != "endsubroutine")
                                         ranges.shift();
                                     break;
                                 case "while":
@@ -469,30 +509,30 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 }
             }
     
-            if (!token)
-                return null;
-    
-            if (tokenRange) {
-                if (!outputRange) {
-                    ranges.push(stream.getCurrentTokenRange());
-                } else {
-                    ranges.push(outputRange);
-                }
-                return ranges;
+
+        if (!token)
+            return null;
+
+        if (tokenRange) {
+            if (!outputRange) {
+                ranges.push(stream.getCurrentTokenRange());
+            } else {
+                ranges.push(outputRange);
             }
-    
-            var row = stream.getCurrentTokenRow();
-            if (dir === -1) {
-                var endColumn = session.getLine(row).length;
-                return new Range(row, endColumn, startRow - 1, startColumn);
-            } else
-                return new Range(startRow, startColumn, row - 1, session.getLine(row - 1).length);
-        };
-    
-    }).call(FoldMode.prototype);
-    
-    });
-    
+            return ranges;
+        }
+
+        var row = stream.getCurrentTokenRow();
+        if (dir === -1) {
+            var endColumn = session.getLine(row).length;
+            return new Range(row, endColumn, startRow - 1, startColumn);
+        } else
+            return new Range(startRow, startColumn, row - 1, session.getLine(row - 1).length);
+    };
+
+}).call(FoldMode.prototype);
+
+});
     ace.define("ace/mode/pseudocode",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/pseudocode_highlight_rules","ace/mode/folding/pseudocode","ace/range"], function(require, exports, module) {
     "use strict";
     
