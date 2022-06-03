@@ -14,12 +14,12 @@ ace.define("ace/mode/pseudocode_highlight_rules",["require","exports","module","
                 "STRING_TO_INT|STRING_TO_REAL|"+
                 "INT_TO_STRING|REAL_TO_STRING|CHAR_TO_CODE|"+
                 "CODE_TO_CHAR|Substring|Subroutine|Len|RANDOM_INT|Sub|Call|openRead|readLine|close|endOfFile|"+
-                "writeLine|openWrite|startOfFile|read|write|open|procedure|print|output|display|input|",
+                "writeLine|openWrite|startOfFile|read|write|open|procedure|print|output|display|input|record|endrecord|",
             "keyword.operator.asp": "Mod|And|Not|Or|Xor|As|Eqv|Imp|Is|Div",
             "iterator.language":"Endif|Case|Do|Loop|When|Select|While|For|Endfor|If|Then|Else|ElseIf|While|Each|Select|Case|Return|Continue|Do|Loop|Next|"+
             "Repeat|Until|Endwhile|Endif|Then|",
             "variable.language":"To|With|Exit|i|j|until",
-            "endings.language":"End subroutine|end sub|end function|end",
+            "endings.language":"EndSubroutine|endsub|endfunction|end",
             "constant.language.asp": "Empty|False|Nothing|Null|True"
         }, "identifier", true);
     
